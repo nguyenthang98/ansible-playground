@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  server-1:
+    image: eugenes1/python-sshd
+    container_name: server-1
+    hostname: server-1
+    networks:
+      - ansible
+  server-2:
+    image: eugenes1/python-sshd
+    container_name: server-2
+    hostname: server-2
+    networks:
+      - ansible
+  server-3:
+    image: eugenes1/python-sshd
+    container_name: server-3
+    hostname: server-3
+    networks:
+      - ansible
+  server-4:
+    image: eugenes1/python-sshd
+    container_name: server-4
+    hostname: server-4
+    networks:
+      - ansible
+  server-5:
+    image: eugenes1/python-sshd
+    container_name: server-5
+    hostname: server-5
+    networks:
+      - ansible
+  server-6:
+    image: eugenes1/python-sshd
+    container_name: server-6
+    hostname: server-6
+    networks:
+      - ansible
+  server-7:
+    image: eugenes1/python-sshd
+    container_name: server-7
+    hostname: server-7
+    networks:
+      - ansible
+  server-8:
+    image: eugenes1/python-sshd
+    container_name: server-8
+    hostname: server-8
+    networks:
+      - ansible
+  server-9:
+    image: eugenes1/python-sshd
+    container_name: server-9
+    hostname: server-9
+    networks:
+      - ansible
+  server-10:
+    image: eugenes1/python-sshd
+    container_name: server-10
+    hostname: server-10
+    networks:
+      - ansible
+networks:
+  ansible:
+    name: ansible-net

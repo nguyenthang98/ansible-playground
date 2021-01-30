@@ -1,0 +1,16 @@
+
+---
+- name: Test ansible
+  hosts: all
+  vars_prompt:
+    - name: "uninstall"
+      prompt: |
+        Uninstall on nodes:
+        {% for node in ansible_play_hosts %}
+          - {{ node }}
+        {% endfor %}
+      default: no
+      private: no
+  tasks:
+    - debug:
+        msg: "{{ uninstall }}"

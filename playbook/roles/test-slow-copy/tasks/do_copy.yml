@@ -1,0 +1,19 @@
+---
+
+- name: Copying {{ copy_item }} to remote host
+  shell: sleep {{ network_speed }} && echo "copied {{ copy_item }}" >> /tmp/ansible.log
+  async: 100
+  poll: 0
+  register: copy_async
+
+- name: Check copy async
+  async_status:
+    jid: "{{ copy_async.ansible_job_id }}"
+  register: copy_async_results
+  retries: 30
+  until: copy_async_results.finished
+
+- name: Removing {{ copy_item }} on remote host
+  shell: sleep 5 && echo "removed {{ copy_item }}" >> /tmp/ansible.log
+  async: 100
+  poll: 0

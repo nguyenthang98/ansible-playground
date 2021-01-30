@@ -1,0 +1,6 @@
+---
+- name: Test ansible
+  hosts: all
+  strategy: free
+  roles:
+    - test-slow-copy

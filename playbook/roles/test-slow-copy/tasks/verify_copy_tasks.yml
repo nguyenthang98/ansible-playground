@@ -1,0 +1,13 @@
+---
+- name: Check async copy
+  async_status: 
+    jid: "{{ task_item.ansible_job_id }}"
+  register: task_result
+  until: task_result.finished
+  retries: 30
+  failed_when: task_result.failed
+
+- name: Remove {{ task_item.copy_item }}
+  shell: sleep 5 && rm /tmp/{{ task_item.copy_item }}  && echo "Removed {{ task_item.copy_item }}" >>/tmp/ansible.log
+  async: 100
+  poll: 0
