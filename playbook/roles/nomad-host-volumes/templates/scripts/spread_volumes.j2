@@ -1,0 +1,45 @@
+{%- set spread_volumes = namespace(value=[]) -%}
+{%- for volume in required_volumes -%}
+    {%- if volume.spread is defined and volume.spread | bool -%}
+        {%- set count = namespace(value=0) -%}
+        {%- for host in play_hosts|sort -%}
+            {%- for vol in hostvars[host]['host_volumes'] -%}
+                {%- if vol.name == volume.name -%}
+                    {%- set count.value = count.value + 1 -%}
+                {%- endif -%}
+            {%- endfor -%}
+        {%- endfor -%}
+        {%- for host in play_hosts|sort -%}
+            {%- set has_volume = namespace(value=0) -%}
+            {%- for vol in hostvars[host]['host_volumes'] -%}
+                {%- if vol.name == volume.name -%}
+                    {%- set has_volume.value = 1 -%}
+                {%- endif -%}
+            {%- endfor -%}
+            {%- if has_volume.value == 0 -%}
+                {%- set count.value = count.value + 1 -%}
+                {%- set append_volume = volume | combine({'post-fix': ('%02d' % count.value) }) -%}
+                {%- if inventory_hostname == host -%}
+                    {%- set _ = spread_volumes.value.append(append_volume) -%}
+                {%- endif -%}
+            {%- endif -%}
+        {%- endfor -%}
+        {#
+            {%- set pre_count = count.value -%}
+            {%- for vol in hostvars[host]['host_volumes'] -%}
+                {%- if vol.name == volume.name -%}
+                    {%- set count.value = count.value + 1 -%}
+                {%- endif -%}
+            {%- endfor -%}
+            {%- if pre_count == count.value -%}
+                {%- set count.value = count.value + 1 -%}
+                {%- set append_volume = volume | combine({'post-fix': ('%02d' % count.value) }) -%}
+                {%- if inventory_hostname == host -%}
+                    {%- set _ = spread_volumes.value.append(append_volume) -%}
+                {%- endif -%}
+            {%- endif -%}
+        #}
+    {%- endif -%}
+{%- endfor -%}
+
+{{ host_volumes | union(spread_volumes.value) }}

@@ -1,9 +1,17 @@
 {%- set built_host_volumes = [] -%}
 {%- for volume in host_volumes -%}
-    {%- if volume.path is defined -%}
-        {%- set _ = built_host_volumes.append({ 'name': volume.name + '-' + volume['post-fix'], 'path': volume.path }) -%}
-    {%- elif volume.paths is defined and volume.paths | length > 0 -%}
-        {%- set _ = built_host_volumes.append({ 'name': volume.name + '-' + volume['post-fix'], 'path': volume.paths | first }) -%}
+    {%- set name = volume.name + '-' + volume['post-fix'] -%}
+    {%- if volume.unique is defined and not volume.unique | bool -%}
+        {%- set name = volume.name -%}
     {%- endif -%}
+    {%- set path = '' -%}
+    {%- if volume.path is defined -%}
+        {%- set path = volume.path -%}
+    {%- elif volume.paths is defined and volume.paths | length > 0 -%}
+        {%- set path = volume.paths | first -%}
+    {%- endif-%}
+
+    {%- set _ = built_host_volumes.append({ 'name': name, 'path': path }) -%}
+
 {%- endfor -%}
 {{ built_host_volumes }}

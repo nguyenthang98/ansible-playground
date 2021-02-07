@@ -1,10 +1,13 @@
----
 # BEGIN NOMAD HOST VOLUMES
 host_volumes:
-  - name: mongodb-data-01
-    path: /mnt/mongodb-data
   - name: es-data-01
     path: /mnt/es-data
+  - name: zookeeper-data-01
+    path: /mnt/zookeeper-data
+  - name: telegraf-data-03
+    path: /mnt/telegraf-data
+  - name: telegraf-libs
+    path: /mnt/telegraf-libs
   - name: correlation-log-01
     path: /mnt/correlation-data/log
   - name: correlation-rules-01
@@ -13,4 +16,8 @@ host_volumes:
     path: /mnt/correlation-data/conf
   - name: correlation-libs-01
     path: /mnt/correlation-data/libs
+  - name: kafka-log
+    path: /mnt/kafka-data/log
+  - name: kafka-datalog-01
+    path: /mnt/kafka-data/datalog
 # END NOMAD HOST VOLUMES

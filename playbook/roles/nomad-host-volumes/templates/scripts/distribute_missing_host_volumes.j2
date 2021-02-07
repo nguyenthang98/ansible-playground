@@ -50,7 +50,7 @@
         {%- set undefined_volumes.value = undefined_volumes.value | difference(volumes_tmp) -%}
         {%- if inventory_hostname == host -%}
         {%- for volume_item in volumes_tmp -%}
-        {%- set _ = other_host_volumes.value.append(volume_item | combine({'post-fix': '01' })) -%}
+            {%- set _ = other_host_volumes.value.append(volume_item | combine({'post-fix': '01' })) -%}
         {%- endfor -%}
         {%- endif -%}
     {%- endif -%}

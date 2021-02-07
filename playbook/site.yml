@@ -1,14 +1,22 @@
 ---
-- name: Test ansible
+
+- name: Prepare host volumes
   hosts: all
   gather_facts: false
   roles:
     - nomad-host-volumes
 
-- name: Test ansible
+- name: Remove host volumes
   hosts: all
   gather_facts: false
   tasks:
     - debug:
         msg: |
           {{ host_volumes | to_nice_yaml }}
+    
+    - import_role:
+        name: nomad-host-volumes
+        tasks_from: remove_host_volumes
+      tags:
+        - remove
+        - never

@@ -19,12 +19,12 @@ services:
     hostname: server-3
     networks:
       - ansible
-#   server-4:
-#     image: eugenes1/python-sshd
-#     container_name: server-4
-#     hostname: server-4
-#     networks:
-#       - ansible
+  server-4:
+    image: eugenes1/python-sshd
+    container_name: server-4
+    hostname: server-4
+    networks:
+      - ansible
 #   server-5:
 #     image: eugenes1/python-sshd
 #     container_name: server-5

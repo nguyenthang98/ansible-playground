@@ -39,6 +39,15 @@
       After distributed missing volumes: 
       {{ host_volumes | to_nice_yaml }}
 
+- name: Spread volumes
+  set_fact:
+    host_volumes: "{{ lookup('template', 'scripts/spread_volumes.j2') }}"
+
+- debug:
+    msg: |
+      After spread volumes: 
+      {{ host_volumes | to_nice_yaml }}
+
 - name: Expand sub volumes
   set_fact:
     host_volumes: "{{ lookup('template', 'scripts/expand_sub_volumes.j2') }}"

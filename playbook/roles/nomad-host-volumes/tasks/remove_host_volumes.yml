@@ -1,0 +1,8 @@
+---
+- name: Remove all host volumes
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ host_volumes }}"
+  loop_control:
+    label: "{{ item.name }}"

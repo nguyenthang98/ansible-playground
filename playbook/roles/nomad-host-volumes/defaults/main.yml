@@ -1,5 +1,13 @@
 ---
 
+# ==============================
+# volume configs:
+#   - name: name of the volume
+#   - path: path of the volume
+#   - sub_volumes: list of sub volumes with path is relative with the main volume's path
+#   - uniqe: (true) use the uniqe name of volume with post fix counter (name-01, name-02, name-03, ...)
+#   - spread: (false) spread the volume to all the hosts (if the volume already exists on host, will not create on this host)
+# ==============================
 required_volumes:
   - name: mongodb-data
     path: /mnt/mongodb-data
@@ -24,6 +32,14 @@ required_volumes:
 
   - name: kafka-data
     path: /mnt/kafka-data
+    sub_volumes:
+      - name: kafka-log
+        sub_path: log
+        unique: false
+      - name: kafka-datalog
+        sub_path: datalog
+
+    spread: true
 
   - name: zookeeper-data
     path: /mnt/zookeeper-data
@@ -33,3 +49,9 @@ required_volumes:
 
   - name: telegraf-data
     path: /mnt/telegraf-data
+    spread: true
+
+  - name: telegraf-libs
+    path: /mnt/telegraf-libs
+    unique: false # default true
+    spread: true # default false
