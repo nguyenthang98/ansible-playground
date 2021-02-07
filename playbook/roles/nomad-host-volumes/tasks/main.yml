@@ -90,8 +90,8 @@
       file:
         path: "{{ playbook_dir }}/host_vars/{{ item.item }}"
         state: directory
-        owner: 1000
-        group: 1000
+        owner: "1000"
+        group: "1000"
       when: not item.stat.exists | bool
 
     - name: Touch file in folders
