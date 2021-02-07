@@ -1,0 +1,9 @@
+# BEGIN NOMAD HOST VOLUMES
+host_volumes:
+  - name: kafka-data-01
+    path: /mnt/kafka-data
+  - name: zookeeper-data-01
+    path: /mnt/zookeeper-data
+  - name: siem-api-data-01
+    path: /mnt/siem-api-data
+# END NOMAD HOST VOLUMES

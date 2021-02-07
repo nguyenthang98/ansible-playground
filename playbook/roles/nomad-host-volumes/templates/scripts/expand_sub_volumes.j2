@@ -1,0 +1,15 @@
+{%- set new_volumes = namespace(value=[]) -%}
+{%- set remove_volumes = namespace(value=[]) -%}
+{%- for volume in host_volumes -%}
+    {%- if volume.sub_volumes is defined -%}
+        {%- set sub_volumes = [] -%}
+        {%- for sub_item in volume.sub_volumes -%}
+            {%- set _ = sub_volumes.append(sub_item | combine({'path': volume.path + '/' + sub_item.sub_path, 'post-fix': volume['post-fix'] })) -%}
+        {%- endfor -%}
+        {%- set new_volumes.value = new_volumes.value + sub_volumes -%}
+
+        {#- remove host volume -#}
+        {%- set _ = remove_volumes.value.append(volume) -%}
+    {%- endif -%}
+{%- endfor -%}
+{{ host_volumes | union(new_volumes.value) | difference(remove_volumes.value) }}

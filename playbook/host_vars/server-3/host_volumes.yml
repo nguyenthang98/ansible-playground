@@ -1,0 +1,5 @@
+# BEGIN NOMAD HOST VOLUMES
+host_volumes:
+  - name: telegraf-data-01
+    path: /mnt/telegraf-data
+# END NOMAD HOST VOLUMES

@@ -1,0 +1,125 @@
+---
+
+- name: Check if host_volume exists
+  stat:
+    path: "{{ required_volume_item.path }}"
+  register: required_volumes_path_check
+
+  loop_control:
+    loop_var: "required_volume_item"
+    label: "{{ required_volume_item.path }}"
+  loop: >
+    {%- set loop_list = [] -%}
+    {%- for volume in required_volumes -%}
+      {%- if volume.paths is defined -%}
+        {%- for path in volume.paths -%}
+          {%- set _ = loop_list.append(volume | combine({'path': path})) -%}
+        {%- endfor -%}
+      {%- else -%}
+        {%- set _ = loop_list.append(volume) -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {{ loop_list }}
+
+- name: Find host volumes on each host 
+  set_fact:
+    host_volumes: "{{ lookup('template', 'scripts/find_host_volumes.j2') }}"
+
+- debug:
+    msg: |
+      Found volumes on this host:
+      {{ host_volumes | to_nice_yaml }}
+
+- name: Distribute missing volume 
+  set_fact:
+    host_volumes: "{{ lookup('template', 'scripts/distribute_missing_host_volumes.j2') }}"
+
+- debug:
+    msg: |
+      After distributed missing volumes: 
+      {{ host_volumes | to_nice_yaml }}
+
+- name: Expand sub volumes
+  set_fact:
+    host_volumes: "{{ lookup('template', 'scripts/expand_sub_volumes.j2') }}"
+
+- debug:
+    msg: |
+      {{ host_volumes | to_nice_yaml }}
+
+- name: build host volumes 
+  set_fact:
+    host_volumes: "{{ lookup('template', 'scripts/build_host_volume_list.j2') }}"
+
+- debug:
+    msg: |
+      {{ host_volumes | to_nice_yaml }}
+
+- name: Check if host volume existing path
+  stat:
+    path: "{{ item.path }}"
+  with_items: "{{ host_volumes }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: host_volumes_path_check
+
+- name: Make host volume directory if not exists
+  file:
+    path: "{{ item.item.path }}"
+    state: "directory"
+  when: not item.stat.exists | bool
+  with_items: "{{ host_volumes_path_check.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
+
+- block:
+    - name: Check if host_vars file exists
+      delegate_to: localhost
+      run_once: true
+      with_items: "{{ play_hosts }}"
+      stat:
+        path: "{{ playbook_dir }}/host_vars/{{ item }}"
+      register: host_vars_file_check
+    
+    - name: Make folder if not exists
+      delegate_to: localhost
+      with_items: "{{ host_vars_file_check.results }}"
+      run_once: true
+      loop_control:
+        label: "{{ item.item }}"
+      file:
+        path: "{{ playbook_dir }}/host_vars/{{ item.item }}"
+        state: directory
+        owner: 1000
+        group: 1000
+      when: not item.stat.exists | bool
+
+    - name: Touch file in folders
+      delegate_to: localhost
+      with_items: "{{ host_vars_file_check.results }}"
+      run_once: true
+      loop_control:
+        label: "{{ item.item }}"
+      file:
+        path: "{{ playbook_dir }}/host_vars/{{ item.item }}/host_volumes.yml"
+        owner: "1000"
+        group: "1000"
+        state: touch
+      when: not item.stat.exists | bool or item.stat.isdir | bool
+
+    - name: Write hosts volumes to host_vars file
+      delegate_to: localhost
+      with_items: "{{ host_vars_file_check.results }}"
+      run_once: true
+      loop_control:
+        label: "{{ item.item }}"
+      vars:
+        paths:
+          - "{{ playbook_dir }}/host_vars/{{ item.item }}/host_volumes.yml"
+          - "{{ playbook_dir }}/host_vars/{{ item.item }}"
+      blockinfile:
+        marker: "# {mark} NOMAD HOST VOLUMES"
+        block: |
+          host_volumes:
+            {{ hostvars[item.item]['host_volumes'] | to_nice_yaml(indent=2) | indent(2) }}
+        path: "{{ lookup('first_found', paths) }}"

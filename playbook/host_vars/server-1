@@ -1,0 +1,16 @@
+---
+# BEGIN NOMAD HOST VOLUMES
+host_volumes:
+  - name: mongodb-data-01
+    path: /mnt/mongodb-data
+  - name: es-data-01
+    path: /mnt/es-data
+  - name: correlation-log-01
+    path: /mnt/correlation-data/log
+  - name: correlation-rules-01
+    path: /mnt/correlation-data/rules
+  - name: correlation-config-01
+    path: /mnt/correlation-data/conf
+  - name: correlation-libs-01
+    path: /mnt/correlation-data/libs
+# END NOMAD HOST VOLUMES

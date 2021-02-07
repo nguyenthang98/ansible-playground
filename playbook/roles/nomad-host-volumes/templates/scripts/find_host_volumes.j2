@@ -1,0 +1,26 @@
+
+{%- set host_volumes = [] -%}
+{%- for volume in required_volumes -%}
+    {%- set count_volume = namespace(value=0) -%}
+    {%- for host in play_hosts|sort -%}
+        {%- set check_dicts = [] -%}
+
+        {%- for check_result in hostvars[host]['required_volumes_path_check']['results'] -%}
+        {%- if check_result.required_volume_item.name == volume.name -%}
+        {%- set _ = check_dicts.append(check_result) -%}
+        {%- endif -%}
+        {%- endfor -%}
+
+        {%- for check_item in check_dicts -%}
+            {%- if check_item.stat.exists | bool -%}
+                {%- set count_volume.value =  count_volume.value + 1 -%}
+            {%- endif -%}
+            {%- if check_item.stat.exists | bool and inventory_hostname == host -%}
+                {%- set volume_item = volume | combine({ 'post-fix': ('%02d' % count_volume.value), 'path': check_item.stat.path }) -%}
+                {%- set _ = host_volumes.append(volume_item) -%}
+            {%- endif -%}
+        {%- endfor -%}
+
+    {%- endfor -%}
+{%- endfor -%}
+{{ host_volumes }}

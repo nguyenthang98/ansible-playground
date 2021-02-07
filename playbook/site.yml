@@ -1,6 +1,14 @@
 ---
 - name: Test ansible
   hosts: all
-  strategy: free
+  gather_facts: false
   roles:
-    - test-slow-copy
+    - nomad-host-volumes
+
+- name: Test ansible
+  hosts: all
+  gather_facts: false
+  tasks:
+    - debug:
+        msg: |
+          {{ host_volumes | to_nice_yaml }}

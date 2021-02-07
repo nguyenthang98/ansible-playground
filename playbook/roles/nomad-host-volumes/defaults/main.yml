@@ -1,0 +1,35 @@
+---
+
+required_volumes:
+  - name: mongodb-data
+    path: /mnt/mongodb-data
+  
+  - name: es-data
+    # path: /mnt/es-data
+    paths:
+      - /mnt/es-data
+      - /mnt/es-data-01
+
+  - name: correlation-data
+    path: /mnt/correlation-data
+    sub_volumes:
+      - name: correlation-log
+        sub_path: log
+      - name: correlation-rules
+        sub_path: rules
+      - name: correlation-config
+        sub_path: conf
+      - name: correlation-libs
+        sub_path: libs
+
+  - name: kafka-data
+    path: /mnt/kafka-data
+
+  - name: zookeeper-data
+    path: /mnt/zookeeper-data
+
+  - name: siem-api-data
+    path: /mnt/siem-api-data
+
+  - name: telegraf-data
+    path: /mnt/telegraf-data

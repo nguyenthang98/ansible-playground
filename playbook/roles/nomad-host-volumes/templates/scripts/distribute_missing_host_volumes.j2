@@ -1,0 +1,59 @@
+{%- set other_host_volumes = namespace(value=[]) -%}
+{%- set undefined_volumes = namespace(value=[]) -%}
+{%- for volume in required_volumes -%}
+    {%- set count_volume = namespace(value=0) -%}
+    {%- for host in play_hosts|sort -%}
+        {%- set check_dicts = [] -%}
+
+        {%- for check_result in hostvars[host]['required_volumes_path_check']['results'] -%}
+        {%- if check_result.required_volume_item.name == volume.name -%}
+        {%- set _ = check_dicts.append(check_result) -%}
+        {%- endif -%}
+        {%- endfor -%}
+        {%- set check_item = check_dicts|first -%}
+
+        {%- if check_item.stat.exists | bool -%}
+        {%- set count_volume.value =  count_volume.value + 1 -%}
+        {%- endif -%}
+    {%- endfor -%}
+
+    {%- if count_volume.value == 0 -%}
+        {%- set _ = undefined_volumes.value.append(volume) -%}
+    {%- endif -%}
+{%- endfor -%}
+
+
+{%- set division = play_hosts|length -%}
+{%- set volume_per_host = (required_volumes|length / division) | round(0, 'ceil') | int -%}
+
+{%- for host in play_hosts|sort -%}
+    {%- if hostvars[host]['host_volumes']|length < volume_per_host -%}
+        {%- set n_volume = volume_per_host - hostvars[host]['host_volumes']|length  -%}
+        {%- set volumes_tmp = undefined_volumes.value[0:n_volume] -%}
+        {%- set undefined_volumes.value = undefined_volumes.value | difference(volumes_tmp) -%}
+        {%- if inventory_hostname == host -%}
+        {%- for volume_item in volumes_tmp -%}
+        {%- set _ = other_host_volumes.value.append(volume_item | combine({'post-fix': '01' })) -%}
+        {%- endfor -%}
+        {%- endif -%}
+    {%- endif -%}
+{%- endfor -%}
+
+{%- if required_volumes|length > 0 -%}
+    {%- set volume_per_host = volume_per_host + (required_volumes|length / division) | round(0, 'ceil') |int-%}
+{%- endif -%}
+
+{%- for host in play_hosts|sort -%}
+    {%- if hostvars[host]['host_volumes']|length < volume_per_host -%}
+        {%- set n_volume = volume_per_host - hostvars[host]['host_volumes']|length  -%}
+        {%- set volumes_tmp = undefined_volumes.value[0:n_volume] -%}
+        {%- set undefined_volumes.value = undefined_volumes.value | difference(volumes_tmp) -%}
+        {%- if inventory_hostname == host -%}
+        {%- for volume_item in volumes_tmp -%}
+        {%- set _ = other_host_volumes.value.append(volume_item | combine({'post-fix': '01' })) -%}
+        {%- endfor -%}
+        {%- endif -%}
+    {%- endif -%}
+{%- endfor -%}
+
+{{ host_volumes | union(other_host_volumes.value) }}
