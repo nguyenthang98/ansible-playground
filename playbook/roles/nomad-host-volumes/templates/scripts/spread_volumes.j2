@@ -24,21 +24,6 @@
                 {%- endif -%}
             {%- endif -%}
         {%- endfor -%}
-        {#
-            {%- set pre_count = count.value -%}
-            {%- for vol in hostvars[host]['host_volumes'] -%}
-                {%- if vol.name == volume.name -%}
-                    {%- set count.value = count.value + 1 -%}
-                {%- endif -%}
-            {%- endfor -%}
-            {%- if pre_count == count.value -%}
-                {%- set count.value = count.value + 1 -%}
-                {%- set append_volume = volume | combine({'post-fix': ('%02d' % count.value) }) -%}
-                {%- if inventory_hostname == host -%}
-                    {%- set _ = spread_volumes.value.append(append_volume) -%}
-                {%- endif -%}
-            {%- endif -%}
-        #}
     {%- endif -%}
 {%- endfor -%}
 
