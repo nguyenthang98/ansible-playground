@@ -1,0 +1,63 @@
+---
+all:
+  hosts:
+    server-1:
+      network_speed: 20
+      ansible_host: server-1
+      ansible_user: root
+      ansible_password: root
+      ansible_python_interpreter: /usr/local/bin/python
+    server-2:
+      network_speed: 4
+      ansible_host: server-2
+      ansible_user: root
+      ansible_password: root
+      ansible_python_interpreter: /usr/local/bin/python
+    # server-3:
+    #   network_speed: 3
+    #   ansible_host: server-3
+    #   ansible_user: root
+    #   ansible_password: root
+    #   ansible_python_interpreter: /usr/local/bin/python
+    # server-4:
+    #   network_speed: 7
+    #   ansible_host: server-4
+    #   ansible_user: root
+    #   ansible_password: root
+    #   ansible_python_interpreter: /usr/local/bin/python
+    # server-5:
+    #   network_speed: 5
+    #   ansible_host: server-5
+    #   ansible_user: root
+    #   ansible_password: root
+    #   ansible_python_interpreter: /usr/local/bin/python
+    # server-6:
+    #   network_speed: 8
+    #   ansible_host: server-6
+    #   ansible_user: root
+    #   ansible_password: root
+    #   ansible_python_interpreter: /usr/local/bin/python
+    # server-7:
+    #   network_speed: 4
+    #   ansible_host: server-7
+    #   ansible_user: root
+    #   ansible_password: root
+    #   ansible_python_interpreter: /usr/local/bin/python
+    # server-8:
+    #   network_speed: 6
+    #   ansible_host: server-8
+    #   ansible_user: root
+    #   ansible_password: root
+    #   ansible_python_interpreter: /usr/local/bin/python
+    # server-9:
+    #   network_speed: 9
+    #   ansible_host: server-9
+    #   ansible_user: root
+    #   ansible_password: root
+    #   ansible_python_interpreter: /usr/local/bin/python
+    # server-10:
+    #   network_speed: 1
+    #   ansible_host: server-10
+    #   ansible_user: root
+    #   ansible_password: root
+    #   ansible_python_interpreter: /usr/local/bin/python

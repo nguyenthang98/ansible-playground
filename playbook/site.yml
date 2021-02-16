@@ -1,6 +1,95 @@
 ---
-- name: Test ansible
-  hosts: all
-  strategy: free
+- import_playbook: gather-facts.yml
+
+- name: install consul
+  hosts: consul_instances
+  gather_facts: false
+  become: true
+  vars:
+    consul_install_dependencies: false
+    consul_addresses_http: 0.0.0.0
+  tasks:
+    - shell:
+        cmd: consul keyring -list | tail -n 1 | awk '{print $1}'
+      register: consul_raw_key_read
+      delegate_to: "{{ groups['consul_instances'] | first }}"
+
+    - set_fact:
+        consul_raw_key: "{{ consul_raw_key_read.stdout }}"
+  tags:
+    - join-consul-node
+
+- name: install consul
+  hosts: consul_instances
+  gather_facts: false
+  become: true
+  vars:
+    consul_install_dependencies: false
+    consul_addresses_http: 0.0.0.0
   roles:
-    - test-slow-copy
+    - ansible-consul
+  tags:
+    - consul
+    - join-consul-node
+
+- name: install nomad
+  hosts: nomad_instances
+  gather_facts: false
+  become: true
+  tasks:
+    - set_fact:
+        nomad_retry_join: true
+        nomad_advertise_address: "{{ hostvars[item]['ansible_host'] }}"
+      delegate_to: "{{ item }}"
+      delegate_facts: true
+      with_items: "{{ groups['nomad_instances'] }}"
+      run_once: true
+  tags:
+    - join-nomad-node
+
+- name: install nomad
+  hosts: nomad_instances
+  gather_facts: false
+  become: true
+  vars:
+    nomad_version: 1.0.3
+  roles:
+    - ansible-nomad
+  tags:
+    - nomad
+    - join-nomad-node
+
+- name: uninstall consul
+  hosts: consul_instances
+  gather_facts: false
+  become: true
+  tasks:
+    - import_role:
+        name: ansible-consul
+        tasks_from: uninstall
+  tags:
+    - never
+    - uninstall-consul
+
+- name: uninstall nomad
+  hosts: nomad_instances
+  gather_facts: false
+  become: true
+  tasks:
+    - import_role:
+        name: ansible-nomad
+        tasks_from: uninstall
+
+    - wait_for:
+        timeout: 10
+      run_once: true
+
+    - shell:
+        cmd: nomad system gc
+      delegate_to: "{{ groups['nomad_instances'] | first }}"
+      run_once: true
+      environment:
+        NOMAD_ADDR: "http://{{ hostvars[groups['nomad_instances'] | first].ansible_host }}:4646"
+  tags:
+    - never
+    - uninstall-nomad
