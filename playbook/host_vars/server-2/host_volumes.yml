@@ -1,13 +1,11 @@
 # BEGIN NOMAD HOST VOLUMES
 host_volumes:
-  - name: telegraf-data-01
-    path: /mnt/telegraf-data
-  - name: siem-api-data-01
-    path: /mnt/siem-api-data
-  - name: telegraf-libs
-    path: /mnt/telegraf-libs
-  - name: kafka-log
-    path: /mnt/kafka-data/log
-  - name: kafka-datalog-02
-    path: /mnt/kafka-data/datalog
+  - name: es-hot-data-02
+    path: /mnt/es-ssd-01
+  - name: es-hot-data-03
+    path: /mnt/es-ssd-02
+  - name: es-warm-data-02
+    path: /mnt/es-hdd-01
+  - name: es-warm-data-03
+    path: /mnt/es-hdd-02
 # END NOMAD HOST VOLUMES

@@ -6,17 +6,25 @@
   roles:
     - nomad-host-volumes
 
-- name: Remove host volumes
+- name: Prepare es cluster
   hosts: all
   gather_facts: false
-  tasks:
-    - debug:
-        msg: |
-          {{ host_volumes | to_nice_yaml }}
+  roles:
+    - es-cluster
+  tags:
+    - es
+
+# - name: Remove host volumes
+#   hosts: all
+#   gather_facts: false
+#   tasks:
+#     - debug:
+#         msg: |
+#           {{ host_volumes | to_nice_yaml }}
     
-    - import_role:
-        name: nomad-host-volumes
-        tasks_from: remove_host_volumes
-      tags:
-        - remove
-        - never
+#     - import_role:
+#         name: nomad-host-volumes
+#         tasks_from: remove_host_volumes
+#       tags:
+#         - remove
+#         - never

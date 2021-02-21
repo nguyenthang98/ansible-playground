@@ -9,49 +9,55 @@
 #   - spread: (false) spread the volume to all the hosts (if the volume already exists on host, will not create on this host)
 # ==============================
 required_volumes:
-  - name: mongodb-data
-    path: /mnt/mongodb-data
-  
-  - name: es-data
-    # path: /mnt/es-data
+  - name: es-hot-data
+    # per_host: true
     paths:
-      - /mnt/es-data
-      - /mnt/es-data-01
+      - /mnt/es-ssd-01
+      - /mnt/es-ssd-02
 
-  - name: correlation-data
-    path: /mnt/correlation-data
-    sub_volumes:
-      - name: correlation-log
-        sub_path: log
-      - name: correlation-rules
-        sub_path: rules
-      - name: correlation-config
-        sub_path: conf
-      - name: correlation-libs
-        sub_path: libs
+  - name: es-warm-data
+    # per_host: true
+    paths:
+      - /mnt/es-hdd-01
+      - /mnt/es-hdd-02
 
-  - name: kafka-data
-    path: /mnt/kafka-data
-    sub_volumes:
-      - name: kafka-log
-        sub_path: log
-        unique: false
-      - name: kafka-datalog
-        sub_path: datalog
+  # - name: mongodb-data
+  #   path: /mnt/mongodb-data
+  
+  # - name: correlation-data
+  #   path: /mnt/correlation-data
+  #   sub_volumes:
+  #     - name: correlation-log
+  #       sub_path: log
+  #     - name: correlation-rules
+  #       sub_path: rules
+  #     - name: correlation-config
+  #       sub_path: conf
+  #     - name: correlation-libs
+  #       sub_path: libs
 
-    spread: true
+  # - name: kafka-data
+  #   path: /mnt/kafka-data
+  #   sub_volumes:
+  #     - name: kafka-log
+  #       sub_path: log
+  #       unique: false
+  #     - name: kafka-datalog
+  #       sub_path: datalog
 
-  - name: zookeeper-data
-    path: /mnt/zookeeper-data
+  #   spread: true
 
-  - name: siem-api-data
-    path: /mnt/siem-api-data
+  # - name: zookeeper-data
+  #   path: /mnt/zookeeper-data
 
-  - name: telegraf-data
-    path: /mnt/telegraf-data
-    spread: true
+  # - name: siem-api-data
+  #   path: /mnt/siem-api-data
 
-  - name: telegraf-libs
-    path: /mnt/telegraf-libs
-    unique: false # default true
-    spread: true # default false
+  # - name: telegraf-data
+  #   path: /mnt/telegraf-data
+  #   spread: true
+
+  # - name: telegraf-libs
+  #   path: /mnt/telegraf-libs
+  #   unique: false # default true
+  #   spread: true # default false

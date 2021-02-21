@@ -1,0 +1,139 @@
+# BEGIN ES Cluster configs
+es_cluster:
+  - data: true
+    host: server-1
+    java_xms: 2000
+    java_xmx: 2000
+    master: false
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-hot-01-server-1
+    type: hot
+    volume: es-hot-data-01
+  - data: true
+    host: server-1
+    java_xms: 2000
+    java_xmx: 2000
+    master: true
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-warm-01-server-1
+    type: warm
+    volume: es-warm-data-01
+  - data: true
+    host: server-2
+    java_xms: 2000
+    java_xmx: 2000
+    master: false
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-hot-02-server-2
+    type: hot
+    volume: es-hot-data-02
+  - data: true
+    host: server-2
+    java_xms: 2000
+    java_xmx: 2000
+    master: false
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-hot-03-server-2
+    type: hot
+    volume: es-hot-data-03
+  - data: true
+    host: server-2
+    java_xms: 2000
+    java_xmx: 2000
+    master: true
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-warm-02-server-2
+    type: warm
+    volume: es-warm-data-02
+  - data: true
+    host: server-2
+    java_xms: 2000
+    java_xmx: 2000
+    master: false
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-warm-03-server-2
+    type: warm
+    volume: es-warm-data-03
+  - data: true
+    host: server-3
+    java_xms: 2000
+    java_xmx: 2000
+    master: false
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-hot-04-server-3
+    type: hot
+    volume: es-hot-data-04
+  - data: true
+    host: server-3
+    java_xms: 2000
+    java_xmx: 2000
+    master: false
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-hot-05-server-3
+    type: hot
+    volume: es-hot-data-05
+  - data: true
+    host: server-3
+    java_xms: 2000
+    java_xmx: 2000
+    master: true
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-warm-04-server-3
+    type: warm
+    volume: es-warm-data-04
+  - data: true
+    host: server-4
+    java_xms: 2000
+    java_xmx: 2000
+    master: false
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-hot-06-server-4
+    type: hot
+    volume: es-hot-data-06
+
+
+es_cluster_master:
+  - data: true
+    host: server-1
+    java_xms: 2000
+    java_xmx: 2000
+    master: true
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-warm-01-server-1
+    type: warm
+    volume: es-warm-data-01
+  - data: true
+    host: server-2
+    java_xms: 2000
+    java_xmx: 2000
+    master: true
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-warm-02-server-2
+    type: warm
+    volume: es-warm-data-02
+  - data: true
+    host: server-3
+    java_xms: 2000
+    java_xmx: 2000
+    master: true
+    memory_hard_limit: 5000
+    memory_soft_limit: 4000
+    name: es-warm-04-server-3
+    type: warm
+    volume: es-warm-data-04
+
+
+es_cluster_minimum_master: 2
+# END ES Cluster configs

@@ -1,0 +1,6 @@
+siem:
+  elasticsearch:
+    java_xmx: 2000
+    java_xms: 2000
+    memory_soft_limit: 4000
+    memory_hard_limit: 5000

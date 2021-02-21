@@ -1,6 +1,10 @@
 {%- set built_host_volumes = [] -%}
 {%- for volume in host_volumes -%}
-    {%- set name = volume.name + '-' + volume['post-fix'] -%}
+    {%- if not volume.per_host|default(false) -%}
+        {%- set name = volume.name + '-' + volume['post-fix'] -%}
+    {%- else -%}
+        {%- set name = volume.name + '-' + volume['post-fix'] + '-' + inventory_hostname  -%}
+    {%- endif -%}
     {%- if volume.unique is defined and not volume.unique | bool -%}
         {%- set name = volume.name -%}
     {%- endif -%}

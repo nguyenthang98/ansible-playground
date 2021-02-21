@@ -1,0 +1,68 @@
+---
+- name: Setup ES cluster
+  run_once: true
+  delegate_to: "{{ play_hosts | first }}"
+  set_fact:
+    es_cluster: "{{ lookup('template', 'scripts/build-es-cluster.j2') }}"
+
+- name: Setup ES master
+  run_once: true
+  delegate_to: "{{ play_hosts | first }}"
+  set_fact:
+    es_cluster_master: "{{ lookup('template', 'scripts/es-cluster-master.j2') }}"
+    es_cluster_minimum_master: "{{ lookup('template', 'scripts/es-cluster-minimum-master.j2') }}"
+
+- name: Debug
+  run_once: true
+  delegate_to: "{{ play_hosts | first }}"
+  debug:
+    msg: |
+      es_cluster:
+        {{ es_cluster | to_nice_yaml(indent=2) | indent(4) }}
+
+      es_cluster_master:
+        {{ es_cluster_master | to_nice_yaml(indent=2) | indent(4) }}
+
+      es_cluster_minimum_master: {{ es_cluster_minimum_master }}
+
+- name: Write to file
+  block:
+    - name: Check if es file exists
+      delegate_to: localhost
+      run_once: true
+      stat:
+        path: "{{ playbook_dir }}/group_vars/all/es.yml"
+      register: es_file_stat
+    
+    - block:
+        - name: Ensure group_vars/all exists
+          run_once: true
+          delegate_to: localhost
+          file:
+            path: "{{ playbook_dir }}/group_vars/all" 
+            state: directory
+            owner: "1000"
+            group: "1000"
+        - name: Create group_vars/all/es.yml file
+          run_once: true
+          delegate_to: localhost
+          file:
+            path: "{{ playbook_dir }}/group_vars/all/es.yml" 
+            state: touch
+            owner: "1000"
+            group: "1000"
+      when: not es_file_stat.stat.exists | bool
+    - name: Write content to file
+      run_once: true
+      delegate_to: localhost
+      blockinfile:
+        marker: "# {mark} ES Cluster configs"
+        block: |
+          es_cluster:
+            {{ es_cluster | to_nice_yaml(indent=2) | indent(2) }}
+
+          es_cluster_master:
+            {{ es_cluster_master | to_nice_yaml(indent=2) | indent(2) }}
+
+          es_cluster_minimum_master: {{ es_cluster_minimum_master }}
+        path: "{{ playbook_dir }}/group_vars/all/es.yml"

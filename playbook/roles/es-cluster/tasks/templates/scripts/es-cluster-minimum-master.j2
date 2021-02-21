@@ -1,0 +1,1 @@
+{{ (es_cluster | selectattr("master", "equalto", True) | list | length / 2) | int + 1 }}

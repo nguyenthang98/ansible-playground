@@ -1,0 +1,34 @@
+{%- set es_cluster = [] -%}
+{%- for host in play_hosts | sort -%}
+    {%- set has_master = namespace(value=false) -%}
+    {%- for volume in hostvars[host].host_volumes if volume.name.startswith("es-") -%}
+        {%- set is_master = namespace(value=false) -%}
+
+        {%- if volume.name.startswith("es-warm-data-") and not has_master.value -%}
+            {%- set is_master.value = true -%}
+            {%- set has_master.value = true -%}
+        {%- endif -%}
+
+        {#
+        {%- if loop.last and not has_master.value -%}
+            {%- set is_master.value = true -%}
+            {%- set has_master.value = true -%}
+        {%- endif -%}
+        #}
+
+        {%- set es_instance = {
+            "name": volume.name.replace("-data-", "-") + ("-%s" % host),
+            "data": true,
+            "type": ("hot" if volume.name.startswith("es-hot-data-") else "warm"),
+            "volume": volume.name,
+            "host": host,
+            "master": is_master.value,
+            "java_xmx": siem.elasticsearch.java_xmx,
+            "java_xms": siem.elasticsearch.java_xms,
+            "memory_soft_limit": siem.elasticsearch.memory_soft_limit,
+            "memory_hard_limit": siem.elasticsearch.memory_hard_limit
+        } -%}
+        {%- set _ = es_cluster.append(es_instance) -%}
+    {%- endfor -%}
+{%- endfor -%}
+{{ es_cluster }}
