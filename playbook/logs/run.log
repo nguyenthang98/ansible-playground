@@ -2027,3 +2027,101 @@ AttributeError: 'NoneType' object has no attribute 'get_tasks'
 2021-04-18 11:09:08,416 p=1 u=root n=ansible | [0;33mserver-2[0m                   : [0;32mok=9   [0m [0;33mchanged=4   [0m unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 2021-04-18 11:09:08,416 p=1 u=root n=ansible | server-2                   : ok=9    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 2021-04-18 11:09:08,416 p=1 u=root n=ansible | 
+2021-04-18 11:13:29,151 p=1 u=root n=ansible | PLAY [First play] ********************************************************************************************************************************************************
+2021-04-18 11:13:29,176 p=1 u=root n=ansible | TASK [Gathering Facts] ***************************************************************************************************************************************************
+2021-04-18 11:13:29,198 p=13 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:29,213 p=14 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:29,358 p=13 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:29,363 p=14 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:30,187 p=13 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:30,188 p=14 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:30,922 p=14 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:30,930 p=13 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:30,940 p=1 u=root n=ansible | ok: [server-1]
+2021-04-18 11:13:30,954 p=1 u=root n=ansible | ok: [server-2]
+2021-04-18 11:13:30,996 p=1 u=root n=ansible | TASK [role_1 : debug] ****************************************************************************************************************************************************
+2021-04-18 11:13:31,039 p=1 u=root n=ansible | ok: [server-2] => 
+  msg: Starting first role
+2021-04-18 11:13:31,059 p=1 u=root n=ansible | ok: [server-1] => 
+  msg: Starting first role
+2021-04-18 11:13:31,078 p=1 u=root n=ansible | TASK [Do install role_1] *************************************************************************************************************************************************
+2021-04-18 11:13:31,107 p=25 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:31,135 p=27 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:31,229 p=25 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:31,244 p=27 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:31,678 p=25 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:31,678 p=27 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:33,036 p=25 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:33,100 p=27 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:33,104 p=1 u=root n=ansible | changed: [server-2]
+2021-04-18 11:13:33,139 p=1 u=root n=ansible | changed: [server-1]
+2021-04-18 11:13:33,166 p=1 u=root n=ansible | TASK [Check role_1 installed] ********************************************************************************************************************************************
+2021-04-18 11:13:33,196 p=33 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:33,221 p=36 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:33,338 p=33 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:33,375 p=36 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:33,509 p=33 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:33,532 p=36 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:34,834 p=33 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:34,841 p=1 u=root n=ansible | changed: [server-2]
+2021-04-18 11:13:34,856 p=36 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:34,925 p=1 u=root n=ansible | changed: [server-1]
+2021-04-18 11:13:34,942 p=1 u=root n=ansible | TASK [role_2 : debug] ****************************************************************************************************************************************************
+2021-04-18 11:13:34,978 p=1 u=root n=ansible | ok: [server-2] => 
+  msg: Starting second role
+2021-04-18 11:13:34,998 p=1 u=root n=ansible | ok: [server-1] => 
+  msg: Starting second role
+2021-04-18 11:13:35,021 p=1 u=root n=ansible | TASK [Do install role_2] *************************************************************************************************************************************************
+2021-04-18 11:13:35,048 p=45 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:35,079 p=48 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:35,161 p=45 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:35,189 p=48 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:35,343 p=45 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:35,376 p=48 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:36,728 p=45 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:36,734 p=1 u=root n=ansible | changed: [server-2]
+2021-04-18 11:13:36,756 p=48 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:36,763 p=1 u=root n=ansible | changed: [server-1]
+2021-04-18 11:13:36,792 p=1 u=root n=ansible | TASK [Check role_2 installed] ********************************************************************************************************************************************
+2021-04-18 11:13:36,829 p=53 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:36,880 p=56 u=root n=paramiko.transport | Connected (version 2.0, client OpenSSH_7.2p2-hpn14v4)
+2021-04-18 11:13:37,042 p=53 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:37,068 p=56 u=root n=paramiko.transport | Authentication (password) successful!
+2021-04-18 11:13:37,236 p=53 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:37,237 p=56 u=root n=paramiko.transport.sftp | [chan 2] Opened sftp connection (server version 3)
+2021-04-18 11:13:38,756 p=56 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:38,762 p=1 u=root n=ansible | changed: [server-1]
+2021-04-18 11:13:38,806 p=53 u=root n=paramiko.transport.sftp | [chan 2] sftp session closed.
+2021-04-18 11:13:38,812 p=1 u=root n=ansible | changed: [server-2]
+2021-04-18 11:13:38,835 p=1 u=root n=ansible | TASK [First task] ********************************************************************************************************************************************************
+2021-04-18 11:13:38,882 p=1 u=root n=ansible | ok: [server-2] => 
+  msg: |-
+    this is first task
+2021-04-18 11:13:38,913 p=1 u=root n=ansible | ok: [server-1] => 
+  msg: |-
+    this is first task
+2021-04-18 11:13:38,939 p=1 u=root n=ansible | TASK [Second task] *******************************************************************************************************************************************************
+2021-04-18 11:13:38,997 p=1 u=root n=ansible | ok: [server-2] => (item=second) => 
+  msg: |-
+    this is second task
+2021-04-18 11:13:39,006 p=1 u=root n=ansible | ok: [server-2] => (item=third) => 
+  msg: |-
+    this is third task
+2021-04-18 11:13:39,014 p=1 u=root n=ansible | ok: [server-2] => (item=fourth) => 
+  msg: |-
+    this is fourth task
+2021-04-18 11:13:39,018 p=1 u=root n=ansible | ok: [server-1] => (item=second) => 
+  msg: |-
+    this is second task
+2021-04-18 11:13:39,029 p=1 u=root n=ansible | ok: [server-1] => (item=third) => 
+  msg: |-
+    this is third task
+2021-04-18 11:13:39,036 p=1 u=root n=ansible | ok: [server-1] => (item=fourth) => 
+  msg: |-
+    this is fourth task
+2021-04-18 11:13:39,040 p=1 u=root n=ansible | PLAY RECAP ***************************************************************************************************************************************************************
+2021-04-18 11:13:39,040 p=1 u=root n=ansible | [0;33mserver-1[0m                   : [0;32mok=9   [0m [0;33mchanged=4   [0m unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2021-04-18 11:13:39,041 p=1 u=root n=ansible | server-1                   : ok=9    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2021-04-18 11:13:39,041 p=1 u=root n=ansible | [0;33mserver-2[0m                   : [0;32mok=9   [0m [0;33mchanged=4   [0m unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2021-04-18 11:13:39,041 p=1 u=root n=ansible | server-2                   : ok=9    changed=4    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2021-04-18 11:13:39,041 p=1 u=root n=ansible | 
