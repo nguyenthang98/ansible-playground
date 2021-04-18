@@ -1,6 +1,21 @@
 ---
-- name: Test ansible
+- name: First play
   hosts: all
-  strategy: free
   roles:
-    - test-slow-copy
+    - role_1
+    - role_2
+
+  tasks:
+    - name: First task
+      debug:
+        msg: |
+          this is first task
+
+    - name: Second task
+      debug:
+        msg: |
+          this is {{ item }} task
+      with_items:
+        - second
+        - third
+        - fourth

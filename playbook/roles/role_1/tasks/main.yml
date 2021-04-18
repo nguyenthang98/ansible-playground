@@ -1,0 +1,5 @@
+---
+- debug:
+    msg: Starting first role
+
+- import_tasks: install.yml

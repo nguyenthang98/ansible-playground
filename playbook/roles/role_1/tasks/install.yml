@@ -1,0 +1,7 @@
+---
+
+- name: Do install role_1
+  shell: echo "Installing role 1..." && sleep 1
+
+- name: Check role_1 installed
+  shell: echo "Checking...!" && sleep 1 && echo done
