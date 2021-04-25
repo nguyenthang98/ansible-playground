@@ -19,3 +19,21 @@
         - second
         - third
         - fourth
+
+- name: Second play
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: First task
+      debug:
+        msg: |
+          this is first task
+
+    - name: Second task
+      debug:
+        msg: |
+          this is {{ item }} task
+      with_items:
+        - second
+        - third
+        - fourth
