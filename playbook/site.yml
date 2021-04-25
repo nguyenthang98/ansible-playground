@@ -3,7 +3,6 @@
   hosts: all
   roles:
     - role_1
-    - role_2
 
   tasks:
     - name: First task
@@ -12,9 +11,17 @@
           this is first task
 
     - name: Second task
-      debug:
-        msg: |
-          this is {{ item }} task
+      shell:
+        cmd: echo "this is {{ item }} task" && sleep 1
+      with_items:
+        - first
+        - second
+        - third
+        - fourth
+
+    - name: Third task
+      shell:
+        cmd: echo "this is {{ item }} task" && sleep 1
       with_items:
         - second
         - third
@@ -29,6 +36,34 @@
         msg: |
           this is first task
 
+    - name: Long running task
+      shell:
+        cmd: |
+          echo "Running {{ item.name }} process" && sleep 1 && echo "Done!"
+      loop_control:
+        label: "Pulling {{ item.name }} task"
+      with_items:
+        - name: first
+          age: 1
+        - name: second
+          age: 2
+        - name: third
+          age: 3
+        - name: fourth
+          age: 4
+        - name: fifth
+          age: 5
+        - name: sixth
+          age: 6
+        - name: seventh
+          age: 7
+        - name: eighth
+          age: 8
+        - name: nineth
+          age: 9
+        - name: tenth
+          age: 10
+
     - name: Second task
       debug:
         msg: |
@@ -37,3 +72,5 @@
         - second
         - third
         - fourth
+
+

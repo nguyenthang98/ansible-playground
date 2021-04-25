@@ -49,6 +49,11 @@ class BaseElement():
             if e.errno != errno.EPIPE:
                 raise
 
+    def setBanner(self, msg="", stderr=False, newline=True):
+        self._msg["content"] = msg + "======================"
+        self._msg["stderr"] = stderr
+        self._msg["newline"] = True
+
     def setMessage(self, msg="", stderr=False, newline=True):
         self._msg["content"] = msg
         self._msg["stderr"] = stderr
@@ -60,9 +65,14 @@ class BaseElement():
             child.printToScreen()
 
     def clearScreen(self):
-        sys.stdout.write("\x1b[1A\x1b[2K") # move up cursor and delete whole line
+        if self._msg["newline"]:
+            sys.stdout.write("\x1b[1A\x1b[2K") # move up cursor and delete whole line
         for child in self._children:
             child.clearScreen()
+
+    def printBreakPoint(self):
+        sys.stdout.write("\n-----------------------------------\n")
+
 
 class DisplayPlaybook(BaseElement):
     def __init__(self):
@@ -81,6 +91,10 @@ class DisplayTask(BaseElement):
         super(DisplayTask, self).__init__()
         self._hosts = {}
 
+    def clearCounters(self):
+        for child in self._children:
+            child.clearCounters()
+
     def addHostMessage(self, host_name, host_message):
         if host_name in self._hosts:
             self._hosts[host_name].setMessage("[%s] %s" % (host_name, host_message))
@@ -92,6 +106,10 @@ class DisplayTask(BaseElement):
 class DisplayHost(BaseElement):
     def __init__(self):
         super(DisplayHost, self).__init__()
+        self._processed_items = []
+
+    def clearCounters(self):
+        self._processed_items = []
 
 
 class CustomDisplay(DefaultDisplay):
@@ -170,6 +188,9 @@ class CallbackModule(Yaml):
     def v2_playbook_on_task_start(self, task, is_conditional):
         super(CallbackModule, self).v2_playbook_on_task_start(task, is_conditional)
         self._display_playbook.clearScreen()
+        # self._display_playbook.setMessage(u"", newline=False)
+        # self._display_playbook._play.setMessage(u"", newline=False)
+        self._display_playbook._play._task.clearCounters()
         self._display_playbook._play._task.setMessage(u"Task: %s" % task.get_name().strip())
         self._display_playbook.printToScreen()
 
@@ -177,7 +198,7 @@ class CallbackModule(Yaml):
         super(CallbackModule, self).v2_runner_on_start(host, task)
 
         self._display_playbook.clearScreen()
-        self._display_playbook._play._task.addHostMessage(u"%s" % host, "STARTED!")
+        self._display_playbook._play._task.addHostMessage(u"%s" % host, "RUNNING!")
         self._display_playbook.printToScreen()
 
     def v2_runner_on_ok(self, result):
@@ -204,7 +225,7 @@ class CallbackModule(Yaml):
         msg = ''
         if delegated_vars:
             msg += "-> %s " % delegated_vars['ansible_host']
-        msg += "Failed!"
+        msg += "FAILED!"
         self._display_playbook._play._task.addHostMessage(result._host.get_name(), msg)
         self._display_playbook.printToScreen()
 
@@ -216,7 +237,7 @@ class CallbackModule(Yaml):
         msg = ''
         if delegated_vars:
             msg += "-> %s " % delegated_vars['ansible_host']
-        msg += "Skipped!"
+        msg += "SKIPPED!"
         self._display_playbook._play._task.addHostMessage(result._host.get_name(), msg)
         self._display_playbook.printToScreen()
 
@@ -238,6 +259,7 @@ class CallbackModule(Yaml):
     def v2_playbook_on_stats(self, stats):
         super(CallbackModule, self).v2_playbook_on_stats(stats)
 
+        self._display_playbook.clearScreen()
         self._display.displayBanner("RECAP")
         hosts = sorted(stats.processed.keys())
         for h in hosts:
@@ -256,6 +278,40 @@ class CallbackModule(Yaml):
                 )
             )
 
+    def v2_runner_item_on_skipped(self, result):
+        super(CallbackModule, self).v2_runner_item_on_skipped(result)
+
+
+    def v2_runner_item_on_ok(self, result):
+        super(CallbackModule, self).v2_runner_item_on_ok(result)
+
+        loop = result._task_fields.get('loop', [])
+        curr_item = result._result.get('item')
+        taskDisplay = self._display_playbook._play._task
+        hostDisplay = taskDisplay._hosts[result._host.get_name()]
+        hostDisplay._processed_items.append(curr_item)
+
+        msg = getProgressBar(len(loop), len(hostDisplay._processed_items), "OK: " + self._get_item_label(result._result))
+
+        self._display_playbook.clearScreen()
+        self._display_playbook._play._task.addHostMessage(result._host.get_name(), msg)
+        self._display_playbook.printToScreen()
+
+    def v2_runner_item_on_failed(self, result):
+        super(CallbackModule, self).v2_runner_item_on_failed(result)
+
+        loop = result._task_fields.get('loop', [])
+        curr_item = result._result.get('item')
+        taskDisplay = self._display_playbook._play._task
+        hostDisplay = taskDisplay._hosts[result._host.get_name()]
+        hostDisplay._processed_items.append(curr_item)
+
+        msg = getProgressBar(len(loop), len(hostDisplay._processed_items), "FAILED: " + self._get_item_label(result._result))
+
+        self._display_playbook.clearScreen()
+        self._display_playbook._play._task.addHostMessage(result._host.get_name(), msg)
+        self._display_playbook.printToScreen()
+
 #     def v2_playbook_on_play_notify(self, play):
 #         super(CallbackModule, self).v2_playbook_on_play_notify(play)
 # 
@@ -269,3 +325,9 @@ class CallbackModule(Yaml):
     # enable verbosity for logging (file logging)
     def _run_is_verbose(self, result, verbosity=0):
         return True
+
+def getProgressBar(total=0, curr=0, msg=''):
+    bar_length = 30
+    filled = int(curr * bar_length / total)
+    unfilled = bar_length - filled
+    return "[%s%s] %d / %d - %s" % (filled * '#', unfilled * ' ' , curr, total, msg)
