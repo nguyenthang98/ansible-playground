@@ -6,19 +6,44 @@ services:
     container_name: server-1
     hostname: server-1
     networks:
-      - ansible
+      ansible:
+        ipv4_address: 10.5.0.5
   server-2:
     image: eugenes1/python-sshd
     container_name: server-2
     hostname: server-2
     networks:
-      - ansible
+      ansible:
+        ipv4_address: 10.5.0.6
   server-3:
     image: eugenes1/python-sshd
     container_name: server-3
     hostname: server-3
     networks:
-      - ansible
+      ansible:
+        ipv4_address: 10.5.0.7
+
+  server-4:
+    image: eugenes1/python-sshd
+    container_name: server-4
+    hostname: server-4
+    networks:
+      ansible:
+        ipv4_address: 10.5.0.10
+
+  server-5:
+    image: eugenes1/python-sshd
+    container_name: server-5
+    hostname: server-5
+    networks:
+      ansible:
+        ipv4_address: 10.5.0.11
+
 networks:
   ansible:
+    driver: bridge
     name: ansible-net
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24
+          gateway: 10.5.0.1
