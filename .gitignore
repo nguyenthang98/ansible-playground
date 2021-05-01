@@ -1,2 +1,3 @@
 *.pyc
+**/*.log
 playbook/logs
