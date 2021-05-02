@@ -1,76 +1,29 @@
 ---
-- name: First play
+- name: Gather facts
   hosts: all
-  roles:
-    - role_1
-
+  gather_facts: true
   tasks:
-    - name: First task
-      debug:
-        msg: |
-          this is first task
+    - name: Set default policy for chain
+      iptables:
+        chain: OUTPUT
+        policy: ACCEPT
 
-    - name: Second task
-      shell:
-        cmd: echo "this is {{ item }} task" && sleep 1
-      with_items:
-        - first
-        - second
-        - third
-        - fourth
+    - name: Allow traffic from local net 10.253.155.0/24
+      iptables:
+        comment: "Allow traffic from local network 10.253.155.0/24"
+        action: insert
+        chain: OUTPUT
+        destination: 10.253.155.0/24
+        jump: ACCEPT
+        state: absent
 
-    - name: Third task
-      shell:
-        cmd: echo "this is {{ item }} task" && sleep 1
-      with_items:
-        - second
-        - third
-        - fourth
-
-- name: Second play
-  hosts: all
-  gather_facts: false
-  tasks:
-    - name: First task
-      debug:
-        msg: |
-          this is first task
-
-    - name: Long running task
-      shell:
-        cmd: |
-          echo "Running {{ item.name }} process" && sleep 1 && echo "Done!"
-      loop_control:
-        label: "Pulling {{ item.name }} task"
-      with_items:
-        - name: first
-          age: 1
-        - name: second
-          age: 2
-        - name: third
-          age: 3
-        - name: fourth
-          age: 4
-        - name: fifth
-          age: 5
-        - name: sixth
-          age: 6
-        - name: seventh
-          age: 7
-        - name: eighth
-          age: 8
-        - name: nineth
-          age: 9
-        - name: tenth
-          age: 10
-
-    - name: Second task
-      debug:
-        msg: |
-          this is {{ item }} task
-      with_items:
-        - second
-        - third
-        - fourth
-
+    - name: Allow traffic for SSH
+      iptables:
+        comment: "Allow accept for SSH connention"
+        action: insert
+        chain: OUTPUT
+        source_port: "22"
+        protocol: tcp
+        jump: ACCEPT
+        state: absent
 
